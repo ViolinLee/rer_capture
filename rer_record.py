@@ -28,7 +28,7 @@ def cam_record(root_dir):
                 fps = int(cap.get(cv2.CAP_PROP_FPS))
                 width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
                 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
-                out_dir = os.path.join(root_dir, time_now.strftime("%Y-%m-%d-%H") + '.avi')
+                out_dir = os.path.join(root_dir, time_now.strftime("%Y-%m-%d-%H-%M") + '.avi')
 
                 out = cv2.VideoWriter(out_dir, fourcc, fps, (int(width), int(height)))
 
@@ -40,12 +40,13 @@ def cam_record(root_dir):
                         break
                     # print("Debug: Successfully retieve frame.")
                     # cv2.imshow('frame', frame)
-                    cv2.waitKey(1)
+                    sleep(0.01)
                     out.write(frame)
 
                 print("Stop Recording.")
                 cap.release()
                 out.release()
+                # cv2.destoryAllWindows()
                 break
 
         # print("Not recording phase of time.")
