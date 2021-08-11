@@ -1,0 +1,1 @@
+nohup python3 /home/pi/Downloads/rer_capture/monitor.py &
