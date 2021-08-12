@@ -17,7 +17,7 @@ def cam_record(root_dir):
 
         for minute_segment in minute_segments:
             if minute in minute_segment:
-                cap = cv2.VideoCapture(0)
+                cap = cv2.VideoCapture(-1)
                 fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
                 size = (1024, 768)
                 cap.set(6, fourcc)
@@ -53,19 +53,28 @@ def cam_record(root_dir):
         sleep(1)
 
 
-def run_forever(root_dir):
-    try:
-        cam_record(root_dir)
-    except Exception as err:
-        handle_exception(err)
-        run_forever(root_dir)
+class RunForever(object):
+    def __init__(self):
+        self.retry_cnt = 0
 
+    def run_forever(self, root_dir):
+        try:
+            cam_record(root_dir)
+        except Exception as err:
+            self.retry_cnt += 1
+            if self.retry_cnt > 10:
+                os.system("reboot")
 
-def handle_exception(error):
-    print(error)
-    sleep(5)
+            self.handle_exception(err)
+            self.run_forever(root_dir)
+
+    def handle_exception(self, error):
+        print(error)
+        sleep(10)
 
 
 if __name__ == "__main__":
     root_dir = "/data"
-    run_forever(root_dir)
+
+    contorller = RunForever()
+    contorller.run_forever(root_dir)
