@@ -31,8 +31,8 @@ def cam_record(root_dir):
                 out_dir = os.path.join(root_dir, time_now.strftime("%Y-%m-%d-%H-%M") + '.avi')
 
                 out = cv2.VideoWriter(out_dir, fourcc, fps, (int(width), int(height)))
-
                 print("Start Recording.")
+                cnt = 0
                 while int(datetime.now().hour) * 60 + int(datetime.now().minute) in minute_segment and cap.isOpened():
                     ret, frame = cap.read()
                     if not ret:
@@ -41,7 +41,14 @@ def cam_record(root_dir):
                     # print("Debug: Successfully retieve frame.")
                     # cv2.imshow('frame', frame)
                     sleep(0.01)
-                    out.write(frame)
+                    try:
+                        out.write(frame)
+                    except Exception:  # Acchieve maximum size - 2GB
+                        cnt += 1
+                        out.release()
+                        out_dir_suffix = out_dir.split('.avi')[0] + '_' + str(cnt) + '.avi'
+                        out = cv2.VideoWriter(out_dir_suffix, fourcc, fps, (int(width), int(height)))
+                        out.write(frame)
 
                 print("Stop Recording.")
                 cap.release()
