@@ -32,15 +32,15 @@ def monitor_job():
         print('Space Not Found Error.')
         scheduler.remove_job(job_id='monitor')  # 移除任务
         scheduler.shutdown(wait=False)  # 关闭定时任务
-        sys.exit(-3)
+        sys.exit()
 
     # 2）录像进程监控
     main_pid = check_process("rer_record.py")
     if used_percent > 95:
         if isinstance(main_pid, int):
             print('No enough space.')
-            os.killpg(main_pid, signal.SIGKILL)  # 杀掉进程
-            sys.exit(-3)  # 退出程序
+            os.kill(main_pid, signal.SIGKILL)  # 杀掉进程
+            # sys.exit()  # Not need, will exit after schedul has been shutdown.
         scheduler.remove_job(job_id='monitor')
         scheduler.shutdown(wait=False)
     else:
@@ -48,7 +48,8 @@ def monitor_job():
             os.system('nohup python3 -u /home/pi/Downloads/rer_capture/rer_record.py &')
 
 
-os.system('nohup python3 -u /home/pi/Downloads/rer_capture/rer_record.py &')
+# For debug
+# os.system('nohup python3 -u /home/pi/Downloads/rer_capture/rer_record.py &')
 
 scheduler = BlockingScheduler(timezone='Asia/Shanghai')
 scheduler.add_job(monitor_job, 'interval', id='monitor', minutes=1)
