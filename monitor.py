@@ -1,8 +1,8 @@
 # coding:utf-8
 
 """
-1）监视磁盘空间：>=95%不启动/停止rer_record.py的进程
-2）监视脚本进程：满足1）中磁盘空间<95%
+1）监视磁盘空间：>=98%不启动/停止rer_record.py的进程
+2）监视脚本进程：满足1）中磁盘空间<98%
 """
 
 import os
@@ -36,7 +36,7 @@ def monitor_job():
 
     # 2）录像进程监控
     main_pid = check_process("rer_record.py")
-    if used_percent > 95:
+    if used_percent > 98:
         if isinstance(main_pid, int):
             print('No enough space.')
             os.kill(main_pid, signal.SIGKILL)  # 杀掉进程
