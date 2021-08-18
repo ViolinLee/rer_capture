@@ -47,13 +47,21 @@ def cam_record(root_dir):
                     # cv2.imshow('frame', frame)
                     sleep(0.01)
                     if get_size(out_dir) <= 1073741824:  # 1GB
-                        out.write(frame)
+                        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                        if cv2.mean(gray_frame) > 20:  # not recording at night
+                            out.write(frame)
+                        else:
+                            pass
+
                     else:  # Note: maximum recording size - 2GB
                         cnt += 1
                         out.release()
                         out_dir = out_dir_base.split('.avi')[0] + '_' + str(cnt) + '.avi'
                         out = cv2.VideoWriter(out_dir, fourcc, fps, (int(width), int(height)))
-                        out.write(frame)
+                        if cv2.mean(gray_frame) > 20:
+                            out.write(frame)
+                        else:
+                            pass
 
 
                 print("Stop Recording.")
