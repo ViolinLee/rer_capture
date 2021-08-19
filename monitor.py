@@ -45,11 +45,11 @@ def monitor_job():
         scheduler.shutdown(wait=False)
     else:
         if not isinstance(main_pid, int):
-            os.system('nohup python3 -u /home/pi/Downloads/rer_capture/rer_record.py &')
+            os.system('nohup python3 -u /home/pi/Downloads/rer_capture/rer_record_web.py &')
 
 
 # For debug
-# os.system('nohup python3 -u /home/pi/Downloads/rer_capture/rer_record.py &')
+# os.system('nohup python3 -u /home/pi/Downloads/rer_capture/rer_record_web.py &')
 
 scheduler = BlockingScheduler(timezone='Asia/Shanghai')
 scheduler.add_job(monitor_job, 'interval', id='monitor', minutes=1)
