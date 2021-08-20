@@ -10,7 +10,7 @@ import base64
 from flask import Flask, render_template, request
 from time import sleep
 from datetime import datetime
-from setting import minute_segments
+from setting import minute_segments, reduced_segments
 
 
 app = Flask(__name__)
@@ -121,12 +121,21 @@ _thread.start_new_thread(contorller.run_forever, (root_dir, ))
 
 @app.route('/api/vis')
 def hello_world():
-    if contorller.web_cache.frame is not None:
+    time_now = datetime.now()
+    minute = int(time_now.hour) * 60 + int(time_now.minute)
+    if minute not in reduced_segments:
+        cap_temp = cv2.VideoCapture(0)
+        if cap_temp.isOpened():
+            ret, frame = cap_temp.read()
+            color_stream = base64.b64encode(cv2.imencode('.jpg', frame)[1].tostring()).decode()
+            cap_temp.release()
+        else:
+            color_stream = return_img_stream('img/init.png')
+    elif contorller.web_cache.frame is not None:
         color_stream = base64.b64encode(cv2.imencode('.jpg', contorller.web_cache.frame)[1].tostring()).decode()
-        return render_template('simple_viewer.html', color_stream=color_stream)
     else:
-        init_stream = return_img_stream('img/init.png')
-        return render_template('simple_viewer.html', color_stream=init_stream)
+        color_stream = return_img_stream('img/init.png')
+    return render_template('simple_viewer.html', color_stream=color_stream)
 
 
 if __name__ == "__main__":

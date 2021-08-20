@@ -25,10 +25,13 @@ for i in range(24):
 
 minute_segments = []
 for i in range(24):
-    time_span = list(range(int(i*60), int(i*60+59)))
+    time_span = list(range(int(i*60), int(i*60+30)))
     minute_segments.append(time_span)
+
+reduced_segments = [j for sub in minute_segments for j in sub]
 
 
 print(len(minute_segments))
 for segment in minute_segments:
     print(segment)
+print(reduced_segments)
